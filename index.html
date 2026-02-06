@@ -1,0 +1,1543 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>TempMail Dashboard</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<meta name="theme-color" content="#0f172a" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<style>
+:root {
+    --primary: #00d4ff;
+    --primary-glow: #00d4ff80;
+    --secondary: #8b5cf6;
+    --accent: #00ff9d;
+    --danger: #ff4757;
+    --warning: #ffa502;
+    --success: #2ed573;
+    
+    --bg-primary: #0a0e17;
+    --bg-secondary: #13182c;
+    --bg-card: #1a223f;
+    --bg-surface: #222d4d;
+    
+    --text-primary: #ffffff;
+    --text-secondary: #a0aec0;
+    --text-muted: #718096;
+    
+    --border-color: #2d3748;
+    --shadow-lg: 0 10px 40px rgba(0, 0, 0, 0.4);
+    --shadow-md: 0 4px 20px rgba(0, 0, 0, 0.25);
+    --shadow-sm: 0 2px 10px rgba(0, 0, 0, 0.15);
+    
+    --radius-lg: 20px;
+    --radius-md: 14px;
+    --radius-sm: 10px;
+    
+    --transition-fast: 0.2s ease;
+    --transition-normal: 0.3s ease;
+    --transition-slow: 0.5s ease;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    min-height: 100vh;
+    padding: 20px 15px;
+    overflow-x: hidden;
+    position: relative;
+    line-height: 1.6;
+}
+
+.background-effects {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    overflow: hidden;
+}
+
+.gradient-orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(60px);
+    opacity: 0.15;
+}
+
+.orb-1 {
+    width: 300px;
+    height: 300px;
+    background: var(--primary);
+    top: -100px;
+    right: -100px;
+}
+
+.orb-2 {
+    width: 250px;
+    height: 250px;
+    background: var(--secondary);
+    bottom: -80px;
+    left: -80px;
+}
+
+.orb-3 {
+    width: 180px;
+    height: 180px;
+    background: var(--accent);
+    top: 50%;
+    left: 20%;
+}
+
+.grid-pattern {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-image: 
+        linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+    mask-image: radial-gradient(ellipse at center, black 30%, transparent 70%);
+}
+
+.app-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    padding: 0 10px;
+}
+
+.logo-container {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.app-logo {
+    width: 50px;
+    height: 50px;
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 8px 25px var(--primary-glow);
+}
+
+.app-logo i {
+    font-size: 24px;
+    color: white;
+}
+
+.app-title {
+    font-size: 24px;
+    font-weight: 700;
+    background: linear-gradient(to right, var(--primary), var(--accent));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    letter-spacing: -0.5px;
+}
+
+.app-subtitle {
+    font-size: 13px;
+    color: var(--text-secondary);
+    margin-top: 2px;
+    letter-spacing: 0.5px;
+}
+
+.header-actions {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+}
+
+.notification-container {
+    position: relative;
+}
+
+.notification-btn {
+    width: 48px;
+    height: 48px;
+    border-radius: 14px;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: var(--transition-normal);
+    position: relative;
+}
+
+.notification-btn:hover {
+    background: var(--bg-card);
+    color: var(--primary);
+    transform: translateY(-2px);
+    border-color: var(--primary);
+}
+
+.notification-badge {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background: var(--danger);
+    color: white;
+    font-size: 11px;
+    font-weight: 700;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid var(--bg-primary);
+}
+
+.stats-panel {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.stat-card {
+    background: linear-gradient(145deg, var(--bg-card), var(--bg-surface));
+    border-radius: var(--radius-lg);
+    padding: 22px;
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow-md);
+    transition: var(--transition-normal);
+    position: relative;
+    overflow: hidden;
+}
+
+.stat-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-lg);
+    border-color: var(--primary);
+}
+
+.stat-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: linear-gradient(to right, var(--primary), var(--accent));
+}
+
+.stat-icon {
+    width: 56px;
+    height: 56px;
+    background: rgba(0, 212, 255, 0.1);
+    border-radius: var(--radius-md);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+    color: var(--primary);
+    font-size: 24px;
+}
+
+.stat-content h3 {
+    font-size: 32px;
+    font-weight: 700;
+    margin-bottom: 5px;
+    background: linear-gradient(to right, var(--text-primary), var(--primary));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.stat-content p {
+    color: var(--text-secondary);
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.control-panel {
+    background: var(--bg-card);
+    border-radius: var(--radius-lg);
+    padding: 28px;
+    margin-bottom: 30px;
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow-md);
+}
+
+.control-title {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 25px;
+    color: var(--text-primary);
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.control-title i {
+    color: var(--primary);
+    font-size: 20px;
+}
+
+.input-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    margin-bottom: 25px;
+}
+
+.input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.input-label {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.input-label i {
+    color: var(--primary);
+    font-size: 16px;
+}
+
+.input-wrapper {
+    position: relative;
+}
+
+.input-field {
+    width: 100%;
+    padding: 16px 20px 16px 50px;
+    background: var(--bg-surface);
+    border: 2px solid var(--border-color);
+    border-radius: var(--radius-md);
+    color: var(--text-primary);
+    font-family: 'Inter', sans-serif;
+    font-size: 15px;
+    font-weight: 500;
+    transition: var(--transition-normal);
+}
+
+.input-field:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(0, 212, 255, 0.2);
+}
+
+.input-icon {
+    position: absolute;
+    left: 18px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-muted);
+    font-size: 18px;
+}
+
+.button-group {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.btn {
+    padding: 16px 28px;
+    border-radius: var(--radius-md);
+    font-family: 'Inter', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    transition: var(--transition-normal);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    flex: 1;
+    min-width: 180px;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    color: white;
+    box-shadow: 0 6px 20px rgba(0, 212, 255, 0.3);
+}
+
+.btn-primary:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 25px rgba(0, 212, 255, 0.4);
+}
+
+.btn-secondary {
+    background: var(--bg-surface);
+    color: var(--text-primary);
+    border: 2px solid var(--border-color);
+}
+
+.btn-secondary:hover {
+    background: var(--bg-card);
+    border-color: var(--primary);
+    transform: translateY(-3px);
+}
+
+.btn-danger {
+    background: linear-gradient(135deg, var(--danger), #ff6b81);
+    color: white;
+    box-shadow: 0 6px 20px rgba(255, 71, 87, 0.3);
+}
+
+.btn-danger:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 25px rgba(255, 71, 87, 0.4);
+}
+
+.accounts-section {
+    margin-bottom: 30px;
+}
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+}
+
+.section-title {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.section-title i {
+    color: var(--primary);
+}
+
+.accounts-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 25px;
+}
+
+@media (max-width: 768px) {
+    .accounts-grid {
+        grid-template-columns: 1fr;
+    }
+    .btn {
+        min-width: 100%;
+    }
+}
+
+.account-card {
+    background: linear-gradient(145deg, var(--bg-card), var(--bg-surface));
+    border-radius: var(--radius-lg);
+    padding: 25px;
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow-md);
+    transition: var(--transition-normal);
+    position: relative;
+    overflow: hidden;
+}
+
+.account-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-lg);
+    border-color: var(--primary);
+}
+
+.account-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: linear-gradient(to right, var(--primary), var(--accent));
+}
+
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 20px;
+}
+
+.email-info {
+    flex: 1;
+    margin-right: 15px;
+}
+
+.email-address {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--primary);
+    word-break: break-all;
+    margin-bottom: 5px;
+}
+
+.email-status {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.status-indicator {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    color: var(--text-secondary);
+}
+
+.status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--success);
+}
+
+.status-dot.active {
+    background: var(--success);
+    box-shadow: 0 0 10px var(--success);
+}
+
+.card-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.icon-btn {
+    width: 42px;
+    height: 42px;
+    border-radius: var(--radius-sm);
+    background: var(--bg-surface);
+    border: 1px solid var(--border-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: var(--transition-fast);
+}
+
+.icon-btn:hover {
+    background: var(--primary);
+    color: white;
+    border-color: var(--primary);
+    transform: translateY(-2px);
+}
+
+.icon-btn.delete:hover {
+    background: var(--danger);
+    border-color: var(--danger);
+}
+
+.inbox-section {
+    margin-top: 25px;
+}
+
+.inbox-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.inbox-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.unread-badge {
+    background: var(--primary);
+    color: white;
+    font-size: 12px;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 20px;
+    display: none;
+}
+
+.inbox-container {
+    max-height: 300px;
+    overflow-y: auto;
+    padding-right: 5px;
+}
+
+.inbox-container::-webkit-scrollbar {
+    width: 6px;
+}
+
+.inbox-container::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 10px;
+}
+
+.inbox-container::-webkit-scrollbar-thumb {
+    background: var(--primary);
+    border-radius: 10px;
+}
+
+.email-item {
+    background: var(--bg-surface);
+    border-radius: var(--radius-md);
+    padding: 18px;
+    margin-bottom: 15px;
+    border-left: 4px solid transparent;
+    transition: var(--transition-fast);
+}
+
+.email-item:hover {
+    background: var(--bg-card);
+    transform: translateX(5px);
+}
+
+.email-item.new {
+    border-left-color: var(--primary);
+    background: linear-gradient(to right, rgba(0, 212, 255, 0.05), transparent);
+}
+
+.email-sender {
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 5px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.email-subject {
+    color: var(--text-secondary);
+    font-size: 14px;
+    margin-bottom: 10px;
+    line-height: 1.5;
+}
+
+.email-time {
+    font-size: 12px;
+    color: var(--text-muted);
+    text-align: right;
+}
+
+.otp-badge {
+    display: inline-block;
+    background: linear-gradient(135deg, var(--accent), #00cc88);
+    color: var(--bg-primary);
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 700;
+    padding: 6px 14px;
+    border-radius: var(--radius-sm);
+    margin-top: 10px;
+    font-size: 16px;
+    letter-spacing: 1px;
+    box-shadow: 0 4px 15px rgba(0, 255, 157, 0.3);
+}
+
+.empty-state {
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--text-muted);
+}
+
+.empty-icon {
+    font-size: 48px;
+    color: var(--border-color);
+    margin-bottom: 20px;
+}
+
+.empty-state h3 {
+    font-size: 18px;
+    margin-bottom: 10px;
+    color: var(--text-secondary);
+}
+
+.empty-state p {
+    font-size: 14px;
+    max-width: 300px;
+    margin: 0 auto;
+}
+  
+.notification-panel {
+    position: fixed;
+    top: 0;
+    right: -400px;
+    width: 380px;
+    height: 100vh;
+    background: var(--bg-card);
+    border-left: 1px solid var(--border-color);
+    box-shadow: -10px 0 40px rgba(0, 0, 0, 0.3);
+    z-index: 1000;
+    transition: var(--transition-normal);
+    display: flex;
+    flex-direction: column;
+}
+
+.notification-panel.active {
+    right: 0;
+}
+
+.notification-header {
+    padding: 25px;
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.notification-header h3 {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.close-panel {
+    width: 40px;
+    height: 40px;
+    border-radius: var(--radius-sm);
+    background: var(--bg-surface);
+    border: 1px solid var(--border-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: var(--transition-fast);
+}
+
+.close-panel:hover {
+    background: var(--danger);
+    color: white;
+    border-color: var(--danger);
+}
+
+.notification-list {
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px;
+}
+
+.notification-item {
+    background: var(--bg-surface);
+    border-radius: var(--radius-md);
+    padding: 18px;
+    margin-bottom: 15px;
+    border-left: 4px solid var(--primary);
+    transition: var(--transition-fast);
+}
+
+.notification-item:hover {
+    background: var(--bg-card);
+    transform: translateX(5px);
+}
+
+.notification-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: var(--radius-sm);
+    background: rgba(0, 212, 255, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--primary);
+    margin-bottom: 15px;
+    font-size: 18px;
+}
+
+.notification-content h4 {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 5px;
+}
+
+.notification-content p {
+    font-size: 14px;
+    color: var(--text-secondary);
+    margin-bottom: 10px;
+    line-height: 1.5;
+}
+
+.notification-time {
+    font-size: 12px;
+    color: var(--text-muted);
+    text-align: right;
+}
+
+.privacy-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(10, 14, 23, 0.95);
+    backdrop-filter: blur(10px);
+    border-radius: var(--radius-lg);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 30px;
+    text-align: center;
+    z-index: 10;
+    transition: var(--transition-normal);
+}
+
+.privacy-overlay.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.privacy-icon {
+    width: 80px;
+    height: 80px;
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 25px;
+    font-size: 36px;
+    color: white;
+    box-shadow: 0 15px 35px rgba(0, 212, 255, 0.4);
+}
+
+.privacy-overlay h3 {
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 15px;
+    background: linear-gradient(to right, var(--primary), var(--accent));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.privacy-overlay p {
+    color: var(--text-secondary);
+    margin-bottom: 25px;
+    font-size: 15px;
+    max-width: 300px;
+    line-height: 1.6;
+}
+
+.app-footer {
+    text-align: center;
+    margin-top: 40px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border-color);
+    color: var(--text-muted);
+    font-size: 13px;
+}
+
+.footer-links {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-top: 10px;
+}
+
+.footer-links a {
+    color: var(--text-secondary);
+    text-decoration: none;
+    transition: var(--transition-fast);
+}
+
+.footer-links a:hover {
+    color: var(--primary);
+}
+
+@keyframes pulse {
+    0% { box-shadow: 0 0 0 0 rgba(0, 212, 255, 0.7); }
+    70% { box-shadow: 0 0 0 15px rgba(0, 212, 255, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(0, 212, 255, 0); }
+}
+
+.pulse {
+    animation: pulse 2s infinite;
+}
+
+@keyframes slideUp {
+    from { transform: translateY(20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+.slide-up {
+    animation: slideUp 0.5s ease forwards;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.fade-in {
+    animation: fadeIn 0.3s ease forwards;
+}
+
+.loading-spinner {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 3px solid rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+    border-top-color: var(--primary);
+    animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+</style>
+</head>
+
+<body>
+
+<div class="background-effects">
+    <div class="gradient-orb orb-1"></div>
+    <div class="gradient-orb orb-2"></div>
+    <div class="gradient-orb orb-3"></div>
+    <div class="grid-pattern"></div>
+</div>
+
+<div class="container">
+
+    <header class="app-header">
+        <div class="logo-container">
+            <div class="app-logo">
+                <i class="fas fa-mail-bulk"></i>
+            </div>
+            <div>
+                <h1 class="app-title">TempMail Elite</h1>
+                <p class="app-subtitle">Premium Temporary Email Service</p>
+            </div>
+        </div>
+        
+        <div class="header-actions">
+            <div class="notification-container">
+                <button class="notification-btn" onclick="toggleNotificationPanel()">
+                    <i class="fas fa-bell"></i>
+                    <div class="notification-badge" id="notificationBadge">0</div>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <div class="stats-panel">
+        <div class="stat-card slide-up" style="animation-delay: 0.1s">
+            <div class="stat-icon">
+                <i class="fas fa-envelope-open"></i>
+            </div>
+            <div class="stat-content">
+                <h3 id="totalAccounts">0</h3>
+                <p>Active Accounts</p>
+            </div>
+        </div>
+        
+        <div class="stat-card slide-up" style="animation-delay: 0.2s">
+            <div class="stat-icon">
+                <i class="fas fa-inbox"></i>
+            </div>
+            <div class="stat-content">
+                <h3 id="totalEmails">0</h3>
+                <p>Total Messages</p>
+            </div>
+        </div>
+        
+        <div class="stat-card slide-up" style="animation-delay: 0.3s">
+            <div class="stat-icon">
+                <i class="fas fa-shield-alt"></i>
+            </div>
+            <div class="stat-content">
+                <h3 id="privacyStatus">100%</h3>
+                <p>Privacy Protected</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="control-panel slide-up" style="animation-delay: 0.4s">
+        <div class="control-title">
+            <i class="fas fa-cogs"></i>
+            <span>Account Generator</span>
+        </div>
+        
+        <div class="input-grid">
+            <div class="input-group">
+                <label class="input-label">
+                    <i class="fas fa-user-tag"></i>
+                    Username Prefix
+                </label>
+                <div class="input-wrapper">
+                    <input type="text" id="prefix" class="input-field" placeholder="customname">
+                    <div class="input-icon">
+                        <i class="fas fa-at"></i>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="input-group">
+                <label class="input-label">
+                    <i class="fas fa-hashtag"></i>
+                    Number of Accounts
+                </label>
+                <div class="input-wrapper">
+                    <input type="number" id="count" class="input-field" value="1" min="1" max="10">
+                    <div class="input-icon">
+                        <i class="fas fa-plus-circle"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="button-group">
+            <button class="btn btn-primary" onclick="generateMultiple()">
+                <i class="fas fa-plus-circle"></i>
+                Generate Temp Emails
+            </button>
+            <button class="btn btn-secondary" onclick="refreshAll()">
+                <i class="fas fa-sync-alt"></i>
+                Refresh All Inboxes
+            </button>
+            <button class="btn btn-danger" onclick="clearAll()">
+                <i class="fas fa-trash-alt"></i>
+                Clear All Accounts
+            </button>
+        </div>
+    </div>
+    
+    <section class="accounts-section">
+        <div class="section-header">
+            <h2 class="section-title">
+                <i class="fas fa-address-card"></i>
+                Your Temporary Accounts
+            </h2>
+        </div>
+        
+        <div id="accounts" class="accounts-grid">
+            <div class="empty-state fade-in" id="emptyState">
+                <div class="empty-icon">
+                    <i class="fas fa-inbox"></i>
+                </div>
+                <h3>No Accounts Yet</h3>
+                <p>Generate your first temporary email account to get started</p>
+            </div>
+        </div>
+    </section>
+    
+    <footer class="app-footer">
+        <p>TempMail Elite Dashboard v1.0 • This project is made by Ari</p>
+        <div class="footer-links">
+            <a href="#"><i class="fas fa-shield-alt"></i> Privacy Policy</a>
+            <a href="#"><i class="fas fa-question-circle"></i> Help Center</a>
+            <a href="#"><i class="fas fa-code"></i> API Docs</a>
+        </div>
+    </footer>
+</div>
+
+<div class="notification-panel" id="notificationPanel">
+    <div class="notification-header">
+        <h3><i class="fas fa-bell"></i> Notifications</h3>
+        <button class="close-panel" onclick="toggleNotificationPanel()">
+            <i class="fas fa-times"></i>
+        </button>
+    </div>
+    
+    <div class="notification-list" id="notificationList">
+        <div class="notification-item">
+            <div class="notification-icon">
+                <i class="fas fa-info-circle"></i>
+            </div>
+            <div class="notification-content">
+                <h4>Welcome to TempMail</h4>
+                <p>You'll receive notifications here when new emails arrive in your temporary accounts.</p>
+                <div class="notification-time">Just now</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+let accounts = [];
+let notifications = [];
+let notificationCount = 0;
+
+document.addEventListener('DOMContentLoaded', function() {
+    updateStats();
+    loadFromStorage();
+    
+    addNotification('Welcome to TempMail Dashboard', 'info');
+});
+
+function saveToStorage() {
+    const data = accounts.map(acc => ({
+        email: acc.email,
+        token: acc.token,
+        lastMessageCount: acc.lastMessageCount || 0
+    }));
+    localStorage.setItem('tempMailEliteAccounts', JSON.stringify(data));
+    updateStats();
+}
+
+function loadFromStorage() {
+    const stored = localStorage.getItem('tempMailEliteAccounts');
+    if (stored) {
+        try {
+            const data = JSON.parse(stored);
+            data.forEach(acc => {
+                addUI(acc.email, acc.token, false, acc.lastMessageCount);
+            });
+        } catch(e) {
+            console.error("Failed to load stored accounts", e);
+        }
+    }
+}
+
+function rand(len=6){
+    const chars = "abcdefghijklmnopqrstuvwxyz0123456789";
+    let result = "";
+    for(let i=0; i<len; i++) {
+        result += chars[Math.floor(Math.random() * chars.length)];
+    }
+    return result;
+}
+
+async function generateMultiple() {
+    const count = parseInt(document.getElementById("count").value) || 1;
+    const prefix = document.getElementById("prefix").value.trim();
+    
+
+    const generateBtn = document.querySelector('.btn-primary');
+    const originalText = generateBtn.innerHTML;
+    generateBtn.innerHTML = '<span class="loading-spinner"></span> Generating...';
+    generateBtn.disabled = true;
+    
+    let successCount = 0;
+    
+    for(let i=0; i<count; i++) {
+        const success = await createAccount(prefix);
+        if (success) successCount++;
+        await new Promise(resolve => setTimeout(resolve, 300));
+    }
+    
+
+    generateBtn.innerHTML = originalText;
+    generateBtn.disabled = false;
+    
+    if (successCount > 0) {
+        addNotification(`Successfully generated ${successCount} temporary email account(s)`, 'success');
+    }
+}
+
+async function createAccount(customPrefix) {
+    try {
+
+        const domainRes = await fetch("https://api.mail.tm/domains");
+        const domainData = await domainRes.json();
+        const domain = domainData["hydra:member"][0].domain;
+
+        let prefix = customPrefix || rand(6);
+        const email = prefix + rand(4) + "@" + domain;
+        const password = "TempMail2024!";
+
+        await fetch("https://api.mail.tm/accounts", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ address: email, password })
+        });
+
+        const loginRes = await fetch("https://api.mail.tm/token", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ address: email, password })
+        });
+
+        const tokenData = await loginRes.json();
+        const token = tokenData.token;
+
+        addUI(email, token, true);
+        
+        return true;
+    } catch(error) {
+        console.error("Failed to create account:", error);
+        addNotification("Failed to create temporary email. Please try again.", 'error');
+        return false;
+    }
+}
+
+function addUI(email, token, isNew = true, lastMessageCount = 0) {
+    const emptyState = document.getElementById('emptyState');
+    if (emptyState) emptyState.style.display = 'none';
+    
+    const container = document.getElementById("accounts");
+
+    const accountId = email.replace(/[@.]/g, '-');
+
+    const card = document.createElement('div');
+    card.className = 'account-card slide-up';
+    card.id = `card-${accountId}`;
+    
+    card.innerHTML = `
+        <!-- Privacy Overlay -->
+        <div class="privacy-overlay ${isNew ? '' : 'hidden'}" id="privacy-${accountId}">
+            <div class="privacy-icon">
+                <i class="fas fa-shield-alt"></i>
+            </div>
+            <h3>Private Account Created</h3>
+            <p>This temporary email is visible only to you. Your privacy is 100% protected.</p>
+            <button class="btn btn-primary" style="margin-top: 15px;" onclick="hidePrivacyOverlay('${accountId}')">
+                <i class="fas fa-check"></i>
+                Continue
+            </button>
+        </div>
+        
+        <!-- Card Content -->
+        <div class="card-header">
+            <div class="email-info">
+                <div class="email-address">${email}</div>
+                <div class="email-status">
+                    <div class="status-indicator">
+                        <span class="status-dot active"></span>
+                        <span>Active</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card-actions">
+                <button class="icon-btn" onclick="copyEmail('${email}', this)" title="Copy Email">
+                    <i class="fas fa-copy"></i>
+                </button>
+                <button class="icon-btn delete" onclick="removeAccount('${email}')" title="Delete Account">
+                    <i class="fas fa-trash-alt"></i>
+                </button>
+            </div>
+        </div>
+        
+        <!-- Inbox Section -->
+        <div class="inbox-section">
+            <div class="inbox-header">
+                <div class="inbox-title">
+                    <i class="fas fa-inbox"></i>
+                    Inbox
+                    <div class="unread-badge" id="unread-${accountId}">0</div>
+                </div>
+            </div>
+            
+            <div class="inbox-container" id="inbox-${accountId}">
+                <div class="empty-state" style="padding: 20px 0;">
+                    <div class="empty-icon" style="font-size: 32px;">
+                        <i class="fas fa-envelope"></i>
+                    </div>
+                    <p style="font-size: 13px;">No messages yet</p>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    container.insertBefore(card, container.firstChild);
+    
+    const inboxDiv = card.querySelector(`#inbox-${accountId}`);
+    const unreadBadge = card.querySelector(`#unread-${accountId}`);
+
+    const account = {
+        email,
+        token,
+        inboxDiv,
+        unreadBadge,
+        lastMessageCount,
+        intervalId: null
+    };
+    
+    accounts.push(account);
+    
+    loadInbox(account);
+    const intervalId = setInterval(() => loadInbox(account), 4000);
+    account.intervalId = intervalId;
+    
+  
+    saveToStorage();
+    
+
+    if (isNew) {
+        setTimeout(() => {
+            const overlay = document.getElementById(`privacy-${accountId}`);
+            if (overlay) overlay.classList.remove('hidden');
+        }, 500);
+    }
+}
+
+function hidePrivacyOverlay(accountId) {
+    const overlay = document.getElementById(`privacy-${accountId}`);
+    if (overlay) overlay.classList.add('hidden');
+}
+
+async function loadInbox(account) {
+    try {
+        const response = await fetch("https://api.mail.tm/messages", {
+            headers: { Authorization: "Bearer " + account.token }
+        });
+
+        const data = await response.json();
+        const messages = data["hydra:member"] || [];
+        
+        const newMessageCount = messages.length - account.lastMessageCount;
+        if (newMessageCount > 0 && account.lastMessageCount > 0) {
+
+            addNotification(`📧 ${newMessageCount} new message(s) in ${account.email}`, 'message');
+
+            account.unreadBadge.textContent = newMessageCount;
+            account.unreadBadge.style.display = 'flex';
+            account.unreadBadge.classList.add('pulse');
+            
+            setTimeout(() => {
+                account.unreadBadge.classList.remove('pulse');
+            }, 2000);
+        }
+        
+        account.lastMessageCount = messages.length;
+      
+        if (messages.length === 0) {
+            account.inboxDiv.innerHTML = `
+                <div class="empty-state" style="padding: 20px 0;">
+                    <div class="empty-icon" style="font-size: 32px;">
+                        <i class="fas fa-envelope"></i>
+                    </div>
+                    <p style="font-size: 13px;">No messages yet</p>
+                </div>
+            `;
+        } else {
+            let inboxHTML = '';
+            messages.slice(0, 5).forEach(msg => {
+                const otpMatch = (msg.subject || '').match(/\d{4,8}/);
+                const from = msg.from?.name || msg.from?.address || "Unknown Sender";
+                const time = new Date(msg.createdAt).toLocaleTimeString([], { 
+                    hour: '2-digit', 
+                    minute: '2-digit' 
+                });
+                
+                const isNew = (Date.now() - new Date(msg.createdAt).getTime()) < 10 * 60 * 1000;
+                
+                inboxHTML += `
+                    <div class="email-item ${isNew ? 'new' : ''}">
+                        <div class="email-sender">
+                            <span>${from}</span>
+                            <span class="email-time">${time}</span>
+                        </div>
+                        <div class="email-subject">${msg.subject || "No Subject"}</div>
+                        ${otpMatch ? `<div class="otp-badge">${otpMatch[0]}</div>` : ''}
+                    </div>
+                `;
+            });
+            
+            account.inboxDiv.innerHTML = inboxHTML;
+        }
+
+        updateStats();
+    } catch(error) {
+        console.error("Failed to load inbox for", account.email, error);
+    }
+}
+
+function copyEmail(email, button) {
+    navigator.clipboard.writeText(email).then(() => {
+        const icon = button.querySelector('i');
+        icon.className = 'fas fa-check';
+        button.style.background = 'var(--success)';
+        button.style.borderColor = 'var(--success)';
+        
+        setTimeout(() => {
+            icon.className = 'fas fa-copy';
+            button.style.background = '';
+            button.style.borderColor = '';
+        }, 2000);
+        
+        addNotification(`Copied to clipboard: ${email}`, 'success');
+    });
+}
+
+function removeAccount(email) {
+    if (!confirm(`Are you sure you want to delete this temporary email?\n${email}`)) {
+        return;
+    }
+    
+    const index = accounts.findIndex(acc => acc.email === email);
+    if (index !== -1) {
+
+        if (accounts[index].intervalId) {
+            clearInterval(accounts[index].intervalId);
+        }
+
+        accounts.splice(index, 1);
+
+        const card = document.getElementById(`card-${email.replace(/[@.]/g, '-')}`);
+        if (card) {
+            card.classList.add('hidden');
+            setTimeout(() => card.remove(), 300);
+        }
+        
+        addNotification(`Deleted temporary email: ${email}`, 'info');
+        saveToStorage();
+
+        if (accounts.length === 0) {
+            const emptyState = document.getElementById('emptyState');
+            if (emptyState) emptyState.style.display = 'block';
+        }
+    }
+}
+
+function clearAll() {
+    if (accounts.length === 0) return;
+    
+    if (!confirm(`Are you sure you want to delete all ${accounts.length} temporary email accounts?`)) {
+        return;
+    }
+
+    accounts.forEach(acc => {
+        if (acc.intervalId) clearInterval(acc.intervalId);
+    });
+
+    accounts = [];
+    document.getElementById('accounts').innerHTML = `
+        <div class="empty-state fade-in" id="emptyState">
+            <div class="empty-icon">
+                <i class="fas fa-inbox"></i>
+            </div>
+            <h3>No Accounts Yet</h3>
+            <p>Generate your first temporary email account to get started</p>
+        </div>
+    `;
+    
+    addNotification(`Cleared all temporary email accounts`, 'info');
+    saveToStorage();
+}
+
+function refreshAll() {
+    accounts.forEach(acc => loadInbox(acc));
+    
+    if (accounts.length > 0) {
+        addNotification(`Refreshed ${accounts.length} inboxes`, 'info');
+    }
+}
+
+function updateStats() {
+    document.getElementById('totalAccounts').textContent = accounts.length;
+
+    const totalMessages = accounts.reduce((sum, acc) => sum + (acc.lastMessageCount || 0), 0);
+    document.getElementById('totalEmails').textContent = totalMessages;
+
+    document.getElementById('privacyStatus').textContent = '100%';
+}
+
+function addNotification(message, type = 'info') {
+    const notification = {
+        id: Date.now(),
+        message,
+        type,
+        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        read: false
+    };
+    
+    notifications.unshift(notification);
+    notificationCount++;
+
+    const badge = document.getElementById('notificationBadge');
+    badge.textContent = notificationCount > 9 ? '9+' : notificationCount;
+
+    updateNotificationPanel();
+
+    if (notifications.length > 20) {
+        notifications.pop();
+    }
+}
+
+function updateNotificationPanel() {
+    const notificationList = document.getElementById('notificationList');
+    if (!notificationList) return;
+    
+    let html = '';
+    
+    notifications.forEach(notif => {
+        let icon = 'fas fa-info-circle';
+        if (notif.type === 'success') icon = 'fas fa-check-circle';
+        else if (notif.type === 'error') icon = 'fas fa-exclamation-circle';
+        else if (notif.type === 'warning') icon = 'fas fa-exclamation-triangle';
+        else if (notif.type === 'message') icon = 'fas fa-envelope';
+        
+        html += `
+            <div class="notification-item ${!notif.read ? 'new' : ''}">
+                <div class="notification-icon">
+                    <i class="${icon}"></i>
+                </div>
+                <div class="notification-content">
+                    <h4>${notif.message}</h4>
+                    <div class="notification-time">${notif.time}</div>
+                </div>
+            </div>
+        `;
+    });
+    
+    notificationList.innerHTML = html || `
+        <div class="empty-state" style="padding: 40px 20px;">
+            <div class="empty-icon">
+                <i class="fas fa-bell-slash"></i>
+            </div>
+            <h3>No Notifications</h3>
+            <p>You'll see notifications here when something happens</p>
+        </div>
+    `;
+}
+
+function toggleNotificationPanel() {
+    const panel = document.getElementById('notificationPanel');
+    panel.classList.toggle('active');
+
+    if (panel.classList.contains('active')) {
+        notifications.forEach(notif => notif.read = true);
+        notificationCount = 0;
+        document.getElementById('notificationBadge').textContent = '0';
+        updateNotificationPanel();
+    }
+}
+
+document.addEventListener('click', function(event) {
+    const panel = document.getElementById('notificationPanel');
+    const notificationBtn = document.querySelector('.notification-btn');
+    
+    if (panel.classList.contains('active') && 
+        !panel.contains(event.target) && 
+        !notificationBtn.contains(event.target)) {
+        panel.classList.remove('active');
+    }
+});
+
+document.addEventListener('keydown', function(event) {
+    if (event.key === 'Escape') {
+        const panel = document.getElementById('notificationPanel');
+        panel.classList.remove('active');
+    }
+});
+</script>
+</body>
+</html>
